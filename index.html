@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Waitgains - Turn Hold Time Into Profit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+           CSS VARIABLES & RESET
+           ============================================================ */
+        :root {
+            --primary: #2563eb;       /* Brand Blue */
+            --primary-dark: #1d4ed8;
+            --primary-light: #dbeafe;
+            --secondary: #0f172a;      /* Dark Navy */
+            --accent: #f59e0b;         /* Gold / Orange */
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --white: #ffffff;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --radius: 12px;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            color: var(--gray-800);
+            background: var(--gray-50);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ============================================================
+           BUTTONS
+           ============================================================ */
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-secondary:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: var(--secondary);
+        }
+        .btn-accent:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-white {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+        .btn-outline-white:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--white);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* ============================================================
+           NAVBAR
+           ============================================================ */
+        .navbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--gray-600);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta .btn {
+            padding: 10px 24px;
+            font-size: 0.9rem;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .hamburger span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background: var(--gray-800);
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        /* ============================================================
+           HERO
+           ============================================================ */
+        .hero {
+            padding: 60px 0 80px;
+            background: linear-gradient(135deg, var(--secondary) 0%, #1e3a5f 100%);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero .container {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+        .hero h1 .highlight {
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 28px;
+            max-width: 520px;
+        }
+
+        .hero .stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 32px;
+        }
+        .hero .stats-item {
+            text-align: center;
+        }
+        .hero .stats-item .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: block;
+        }
+        .hero .stats-item .label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-image .placeholder {
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 4/3;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* ============================================================
+           LOGO BAR (Trust)
+           ============================================================ */
+        .logo-bar {
+            padding: 32px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .logo-bar .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+        .logo-bar span {
+            color: var(--gray-300);
+            font-weight: 600;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           HOW IT WORKS
+           ============================================================ */
+        .how-it-works {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        .section-label {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .section-title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 12px;
+        }
+        .section-sub {
+            color: var(--gray-600);
+            max-width: 600px;
+            font-size: 1.1rem;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            margin-top: 48px;
+        }
+        .step-card {
+            text-align: center;
+            padding: 32px 20px;
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            transition: all 0.2s;
+        }
+        .step-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+        .step-card .step-number {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--primary-light);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .step-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .step-card p {
+            font-size: 0.95rem;
+            color: var(--gray-600);
+        }
+
+        /* ============================================================
+           INDUSTRY TABS
+           ============================================================ */
+        .industries {
+            padding: 80px 0;
+            background: var(--gray-50);
+        }
+        .industries .section-title {
+            text-align: center;
+        }
+        .industries .section-sub {
+            text-align: center;
+            margin: 0 auto 40px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        .tab-btn {
+            padding: 12px 28px;
+            border-radius: 50px;
+            border: 2px solid var(--gray-200);
+            background: var(--white);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--gray-600);
+        }
+        .tab-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-content h3 {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+        .tab-content .tag {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .tab-content ul {
+            list-style: none;
+            margin-top: 16px;
+        }
+        .tab-content ul li {
+            padding: 6px 0;
+            padding-left: 28px;
+            position: relative;
+        }
+        .tab-content ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* ============================================================
+           PRICING
+           ============================================================ */
+        .pricing {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        .pricing .section-title {
+            text-align: center;
+        }
+        .pricing .section-sub {
+            text-align: center;
+            margin: 0 auto 48px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+        .pricing-card {
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            text-align: center;
+            background: var(--white);
+            transition: all 0.2s;
+        }
+        .pricing-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+        .pricing-card.popular {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary), var(--shadow);
+        }
+        .pricing-card .plan-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+        .pricing-card .price {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin: 12px 0 4px;
+        }
+        .pricing-card .price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--gray-600);
+        }
+        .pricing-card .description {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        .pricing-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 20px 0 28px;
+        }
+        .pricing-card ul li {
+            padding: 6px 0;
+            padding-left: 28px;
+            position: relative;
+            font-size: 0.95rem;
+            color: var(--gray-700);
+        }
+        .pricing-card ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* ============================================================
+           TESTIMONIALS
+           ============================================================ */
+        .testimonials {
+            padding: 80px 0;
+            background: var(--secondary);
+            color: var(--white);
+        }
+        .testimonials .section-title {
+            color: var(--white);
+            text-align: center;
+        }
+        .testimonials .section-sub {
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            margin: 0 auto 48px;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius);
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .testimonial-card .quote {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 16px;
+        }
+        .testimonial-card .author {
+            font-weight: 600;
+            color: var(--white);
+        }
+        .testimonial-card .title {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ============================================================
+           FAQ
+           ============================================================ */
+        .faq {
+            padding: 80px 0;
+            background: var(--gray-50);
+        }
+        .faq .section-title {
+            text-align: center;
+        }
+        .faq .section-sub {
+            text-align: center;
+            margin: 0 auto 48px;
+        }
+
+        .faq-grid {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .faq-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+        .faq-item summary {
+            padding: 20px 24px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            list-style: none;
+        }
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+        .faq-item summary::after {
+            content: '+';
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: 300;
+        }
+        .faq-item[open] summary::after {
+            content: '−';
+        }
+        .faq-item .answer {
+            padding: 0 24px 24px;
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+
+        /* ============================================================
+           FINAL CTA
+           ============================================================ */
+        .final-cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            text-align: center;
+        }
+        .final-cta h2 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .final-cta p {
+            font-size: 1.2rem;
+            opacity: 0.85;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            background: var(--secondary);
+            color: rgba(255, 255, 255, 0.5);
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer .logo {
+            color: var(--white);
+        }
+        .footer .logo span {
+            color: var(--primary);
+        }
+        .footer a {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .footer a:hover {
+            color: var(--white);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .hero .container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-cta-group {
+                justify-content: center;
+            }
+            .hero .stats {
+                justify-content: center;
+            }
+            .steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 72px;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                padding: 24px;
+                gap: 16px;
+                border-bottom: 1px solid var(--gray-200);
+                box-shadow: var(--shadow);
+            }
+            .hamburger {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            .pricing-card.popular {
+                order: -1;
+            }
+            .tab-content {
+                padding: 24px;
+            }
+            .logo-bar .container {
+                gap: 24px;
+            }
+            .logo-bar span {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .hero .stats {
+                gap: 20px;
+            }
+            .hero .stats-item .number {
+                font-size: 1.5rem;
+            }
+            .btn {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+            .hero-cta-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .hero-cta-group .btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    NAVBAR
+    ============================================================ -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">Wait<span>gains</span></a>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#industries">Industries</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li class="nav-cta"><a href="#signup" class="btn btn-primary">Get Started</a></li>
+            </ul>
+
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+    HERO
+    ============================================================ -->
+    <section class="hero">
+        <div class="container">
+            <div>
+                <h1>Turn Your Hold Time Into <span class="highlight">Profit</span></h1>
+                <p>
+                    Medical offices, e-commerce return centers, and cable companies are
+                    already monetizing their call wait times. Join them and start earning
+                    with zero effort.
+                </p>
+                <div class="hero-cta-group">
+                    <a href="#signup" class="btn btn-accent">Get Started Free</a>
+                    <a href="#how-it-works" class="btn btn-outline-white">See How It Works</a>
+                </div>
+                <div class="stats">
+                    <div class="stats-item">
+                        <span class="number">60%</span>
+                        <span class="label">Revenue share to you</span>
+                    </div>
+                    <div class="stats-item">
+                        <span class="number">10x</span>
+                        <span class="label">Higher conversion than web</span>
+                    </div>
+                    <div class="stats-item">
+                        <span class="number">100+</span>
+                        <span class="label">Businesses already onboard</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="placeholder">
+                    📞 Ad plays while caller holds<br />
+                    <span style="font-size:0.8rem;opacity:0.6;">(Your dashboard preview)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    LOGO BAR (Trust)
+    ============================================================ -->
+    <section class="logo-bar">
+        <div class="container">
+            <span>🏥 Medical</span>
+            <span>📦 E‑Commerce</span>
+            <span>📺 Cable</span>
+            <span>💊 Health</span>
+            <span>🚚 Logistics</span>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    HOW IT WORKS
+    ============================================================ -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <span class="section-label">Simple Setup</span>
+            <h2 class="section-title">How It Works in 4 Steps</h2>
+            <p class="section-sub">
+                No hardware, no long contracts—just connect your phone system and start earning.
+            </p>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <span class="step-number">1</span>
+                    <h3>Connect Your Phone</h3>
+                    <p>Integrate with your existing PBX, VoIP, or call center platform in minutes.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">2</span>
+                    <h3>We Match Ads</h3>
+                    <p>Our exchange selects relevant ads based on who called you—medical, e‑commerce, or cable.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">3</span>
+                    <h3>Earn on Every Call</h3>
+                    <p>You get paid per ad play, interaction, or conversion—<strong>60%</strong> of revenue goes to you.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">4</span>
+                    <h3>Callers Earn Too</h3>
+                    <p>10% goes to the caller—incentivizing them to stay on hold and listen.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    INDUSTRY TABS
+    ============================================================ -->
+    <section class="industries" id="industries">
+        <div class="container">
+            <span class="section-label">Tailored For You</span>
+            <h2 class="section-title">Ads That Match Your Callers</h2>
+            <p class="section-sub">
+                Click your industry to see how we serve relevant, revenue-generating ads.
+            </p>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="medical">🏥 Medical</button>
+                <button class="tab-btn" data-tab="ecommerce">📦 E‑Commerce</button>
+                <button class="tab-btn" data-tab="cable">📺 Cable</button>
+            </div>
+
+            <!-- MEDICAL -->
+            <div class="tab-content active" id="tab-medical">
+                <span class="tag">HIPAA‑compliant</span>
+                <h3>Monetize Patient Hold Time</h3>
+                <p style="color:var(--gray-600);">
+                    Patients calling your practice are already invested in their health.
+                    While they wait, deliver relevant health and wellness ads from trusted partners.
+                </p>
+                <ul>
+                    <li>Local pharmacies, health insurance, wellness brands</li>
+                    <li>Professional voice talent maintains your brand tone</li>
+                    <li>Custom music composition to match your practice</li>
+                    <li>HIPAA‑compliant ad delivery</li>
+                </ul>
+            </div>
+
+            <!-- E-COMMERCE -->
+            <div class="tab-content" id="tab-ecommerce">
+                <span class="tag">High‑conversion</span>
+                <h3>Turn Returns Into Revenue</h3>
+                <p style="color:var(--gray-600);">
+                    Every return call is a chance to retain a customer—and generate profit.
+                    Play targeted ads for shipping services, fulfillment, or competitor offers.
+                </p>
+                <ul>
+                    <li>Logistics, shipping insurance, fulfillment services</li>
+                    <li>Strategic cross‑selling during hold</li>
+                    <li>Integrates with RingCentral, Microsoft Teams Phone, and more</li>
+                    <li>Auto‑scheduled ad rotation with zero tech effort</li>
+                </ul>
+            </div>
+
+            <!-- CABLE -->
+            <div class="tab-content" id="tab-cable">
+                <span class="tag">Captive Audience</span>
+                <h3>Make Every Hold Minute Profitable</h3>
+                <p style="color:var(--gray-600);">
+                    Cable subscribers call with questions, complaints, and upgrades.
+                    Use that captive audience to promote internet, streaming, security, and more.
+                </p>
+                <ul>
+                    <li>Streaming services, smart home devices, internet providers</li>
+                    <li>Streaming music + messages on a custom schedule</li>
+                    <li>Cloud‑based delivery with no file size limits</li>
+                    <li>Fully licensed content for all platforms</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    PRICING
+    ============================================================ -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <span class="section-label">Transparent</span>
+            <h2 class="section-title">Simple, Fair Pricing</h2>
+            <p class="section-sub">No hidden fees. You only pay when you earn.</p>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="plan-name">Starter</div>
+                    <div class="price">$0 <span>/mo</span></div>
+                    <div class="description">Setup is free — start earning immediately.</div>
+                    <ul>
+                        <li>Basic ad delivery</li>
+                        <li>60% revenue share to you</li>
+                        <li>Live analytics dashboard</li>
+                        <li>Email support</li>
+                    </ul>
+                    <a href="#signup" class="btn btn-secondary btn-block">Get Started</a>
+                </div>
+
+                <div class="pricing-card popular">
+                    <div class="plan-name">Professional</div>
+                    <div class="price">$99 <span>/mo</span></div>
+                    <div class="description">For growing businesses that want more.</div>
+                    <ul>
+                        <li>Everything in Starter</li>
+                        <li>Custom ad scripts</li>
+                        <li>Professional voiceovers</li>
+                        <li>Priority ad matching</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <a href="#signup" class="btn btn-primary btn-block">Start Professional</a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="plan-name">Enterprise</div>
+                    <div class="price">Custom</div>
+                    <div class="description">For call centers and large businesses.</div>
+                    <ul>
+                        <li>Everything in Professional</li>
+                        <li>Dedicated account manager</li>
+                        <li>Custom music composition</li>
+                        <li>Full analytics suite</li>
+                        <li>SLA guarantee</li>
+                    </ul>
+                    <a href="#signup" class="btn btn-secondary btn-block">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    TESTIMONIALS
+    ============================================================ -->
+    <section class="testimonials">
+        <div class="container">
+            <span class="section-label" style="color:var(--accent);">Trusted By</span>
+            <h2 class="section-title">What Our Clients Say</h2>
+            <p class="section-sub">Real results from real businesses.</p>
+
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="quote">
+                        “We create effective message‑on‑hold productions that achieve four marketing goals:
+                        educating the customer, brand positioning, selling products, and providing stunning experiences.”
+                    </div>
+                    <div class="author">— Marketing Director</div>
+                    <div class="title">Regional Medical Network</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="quote">
+                        “When major brands need a higher level of customer care, they choose professional
+                        on‑hold messaging. It's now the standard for hospitals, credit unions, and contact centers.”
+                    </div>
+                    <div class="author">— VP of Operations</div>
+                    <div class="title">National Cable Provider</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FAQ
+    ============================================================ -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <span class="section-label">Got Questions?</span>
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-sub">Everything you need to know before getting started.</p>
+
+            <div class="faq-grid">
+                <details class="faq-item">
+                    <summary>How much can I earn?</summary>
+                    <div class="answer">
+                        You receive 60% of ad revenue per play. With 100 calls per day, you could earn
+                        approximately $60/day in ad revenue at standard CPM rates—that's over $1,500/month.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Does this cost me anything?</summary>
+                    <div class="answer">
+                        Setup is completely free. We only take a percentage of ad revenue—you pay nothing
+                        unless you're earning. The Professional plan ($99/mo) adds premium features.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>What phone systems does this work with?</summary>
+                    <div class="answer">
+                        All of them. We integrate with traditional phone lines, VoIP, mobile networks,
+                        RingCentral, Microsoft Teams Phone, Cisco, Avaya, and most major PBX systems.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Can my callers skip the ads?</summary>
+                    <div class="answer">
+                        No—ads play during hold time, which would otherwise be silence or generic music.
+                        Callers earn a 10% revenue share for listening,
+                        which makes hold time more engaging for everyone.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Is my caller data safe?</summary>
+                    <div class="answer">
+                        Yes. We never sell caller data. Ad matching uses anonymized call context only.
+                        Medical clients receive HIPAA-compliant delivery with full audit trails.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>How long does setup take?</summary>
+                    <div class="answer">
+                        Most businesses are live within 24 hours. Connect your phone system, choose your
+                        industry preferences, and our team handles ad matching and onboarding for you.
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    SIGNUP
+    ============================================================ -->
+    <section class="signup" id="signup" style="padding:80px 0;background:var(--white);">
+        <div class="container" style="max-width:560px;text-align:center;">
+            <span class="section-label">Get Started</span>
+            <h2 class="section-title">Start Earning Today</h2>
+            <p class="section-sub" style="margin:0 auto 32px;">
+                Join 100+ businesses already monetizing their hold time. Free setup, no credit card required.
+            </p>
+            <form class="signup-form" style="display:flex;flex-direction:column;gap:16px;text-align:left;">
+                <input type="text" name="company" placeholder="Company name" required
+                    style="padding:14px 18px;border:1px solid var(--gray-200);border-radius:var(--radius);font-size:1rem;font-family:var(--font);" />
+                <input type="email" name="email" placeholder="Work email" required
+                    style="padding:14px 18px;border:1px solid var(--gray-200);border-radius:var(--radius);font-size:1rem;font-family:var(--font);" />
+                <select name="industry" required
+                    style="padding:14px 18px;border:1px solid var(--gray-200);border-radius:var(--radius);font-size:1rem;font-family:var(--font);background:var(--white);color:var(--gray-800);">
+                    <option value="" disabled selected>Select your industry</option>
+                    <option value="medical">Medical / Healthcare</option>
+                    <option value="ecommerce">E-Commerce / Returns</option>
+                    <option value="cable">Cable / Telecom</option>
+                    <option value="other">Other</option>
+                </select>
+                <button type="submit" class="btn btn-primary btn-block">Get Started Free</button>
+            </form>
+            <p style="margin-top:16px;font-size:0.85rem;color:var(--gray-600);">
+                By signing up you agree to our Terms of Service and Privacy Policy.
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FINAL CTA
+    ============================================================ -->
+    <section class="final-cta">
+        <div class="container">
+            <h2>Ready to Turn Hold Time Into Revenue?</h2>
+            <p>
+                Stop leaving money on the table. Connect your phone system and start earning
+                with zero upfront cost.
+            </p>
+            <a href="#signup" class="btn btn-accent">Get Started Free</a>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer class="footer">
+        <div class="container">
+            <a href="#" class="logo">Wait<span>gains</span></a>
+            <div style="display:flex;gap:24px;flex-wrap:wrap;">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#industries">Industries</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
+            </div>
+            <p style="font-size:0.85rem;">&copy; 2026 Waitgains. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile navigation toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // Industry tabs
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                btn.classList.add('active');
+                document.getElementById('tab-' + tab).classList.add('active');
+            });
+        });
+
+        // Signup form handler
+        document.querySelector('.signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thanks for signing up! Our team will be in touch shortly.');
+            e.target.reset();
+        });
+    </script>
+</body>
+</html>
