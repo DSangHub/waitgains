@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - HoldPay{% endblock %}
+{% block content %}
+<div class="card stack">
+  <div>
+    <h1>Welcome back</h1>
+    <p class="sub">{{ email }}</p>
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  {% if not stripe_enabled %}
+    <div class="msg error" style="display:block">
+      Stripe is not configured on the server yet. Set <code>STRIPE_SECRET_KEY</code>
+      (test mode) and restart to enable payout onboarding.
+    </div>
+  {% endif %}
+
+  <div>
+    <div class="row">
+      <div>
+        <strong>Account created</strong>
+        <div class="muted">Your HoldPay business account</div>
+      </div>
+      <span class="pill on">Done</span>
+    </div>
+
+    <div class="row">
+      <div>
+        <strong>Stripe connected</strong>
+        <div class="muted">
+          {% if customer['stripe_account_id'] %}{{ customer['stripe_account_id'] }}{% else %}Not connected yet{% endif %}
+        </div>
+      </div>
+      {% if customer['stripe_account_id'] %}
+        <span class="pill on">Linked</span>
+      {% else %}
+        <span class="pill off">Pending</span>
+      {% endif %}
+    </div>
+
+    <div class="row">
+      <div>
+        <strong>Payouts enabled</strong>
+        <div class="muted">Ready to receive your {{ revenue_share }}% revenue share</div>
+      </div>
+      {% if customer['payouts_enabled'] %}
+        <span class="pill on">Enabled</span>
+      {% else %}
+        <span class="pill off">Not yet</span>
+      {% endif %}
+    </div>
+
+    {% if requirements_due %}
+    <div class="row">
+      <div>
+        <strong>Info still needed by Stripe</strong>
+        <div class="muted">{{ requirements_due | join(', ') }}</div>
+      </div>
+      <span class="pill off">Action</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="stack">
+    {% if not customer['payouts_enabled'] %}
+      <button class="btn btn-primary btn-block" id="connect-btn" {% if not stripe_enabled %}disabled{% endif %}>
+        {% if customer['stripe_account_id'] %}Finish connecting Stripe{% else %}Connect Stripe to get paid{% endif %}
+      </button>
+    {% else %}
+      <button class="btn btn-accent btn-block" id="earn-btn">Simulate ad revenue &amp; payout ($10)</button>
+    {% endif %}
+    <button class="btn btn-block" id="logout-btn" style="background:var(--gray-200);color:var(--gray-700)">Log out</button>
+  </div>
+</div>
+
+<script>
+  const msg = document.getElementById('msg');
+  function show(text, kind) { msg.textContent = text; msg.className = 'msg ' + kind; }
+
+  const connectBtn = document.getElementById('connect-btn');
+  if (connectBtn) {
+    connectBtn.addEventListener('click', async () => {
+      connectBtn.disabled = true;
+      connectBtn.textContent = 'Redirecting to Stripe...';
+      try {
+        const res = await fetch('/api/connect/start', { method: 'POST' });
+        const data = await res.json();
+        if (data.ok) { window.location.href = data.url; }
+        else { show(data.error, 'error'); connectBtn.disabled = false; connectBtn.textContent = 'Connect Stripe to get paid'; }
+      } catch (e) {
+        show('Network error.', 'error'); connectBtn.disabled = false;
+      }
+    });
+  }
+
+  const earnBtn = document.getElementById('earn-btn');
+  if (earnBtn) {
+    earnBtn.addEventListener('click', async () => {
+      earnBtn.disabled = true;
+      earnBtn.textContent = 'Processing...';
+      try {
+        const res = await fetch('/api/simulate-earning', { method: 'POST' });
+        const data = await res.json();
+        if (data.ok) {
+          show(`Paid out $${data.payout.toFixed(2)} to your Stripe account (transfer ${data.transfer_id}).`, 'success');
+        } else { show(data.error, 'error'); }
+      } catch (e) { show('Network error.', 'error'); }
+      earnBtn.disabled = false;
+      earnBtn.textContent = 'Simulate ad revenue & payout ($10)';
+    });
+  }
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await fetch('/api/logout', { method: 'POST' });
+    window.location.href = '/signup';
+  });
+</script>
+{% endblock %}

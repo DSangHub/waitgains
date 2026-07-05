@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}HoldPay{% endblock %}</title>
+  <style>
+    :root {
+      --primary: #2563eb; --primary-dark: #1d4ed8; --primary-light: #dbeafe;
+      --secondary: #0f172a; --accent: #f59e0b; --gray-50: #f8fafc;
+      --gray-200: #e2e8f0; --gray-500: #64748b; --gray-600: #475569;
+      --gray-700: #334155; --white: #fff; --radius: 12px; --green: #16a34a;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font); color: var(--gray-800); background: var(--gray-50); line-height: 1.6; }
+    a { text-decoration: none; color: var(--primary); }
+    .navbar { background: rgba(255,255,255,.95); border-bottom: 1px solid var(--gray-200); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .logo { font-size: 1.5rem; font-weight: 800; color: var(--secondary); }
+    .logo span { color: var(--primary); }
+    .wrap { max-width: 560px; margin: 48px auto; padding: 0 24px; }
+    .card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 40px; box-shadow: 0 10px 15px -3px rgba(0,0,0,.06); }
+    h1 { font-size: 1.9rem; color: var(--secondary); margin-bottom: 8px; }
+    .sub { color: var(--gray-600); margin-bottom: 28px; }
+    label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: 8px; color: var(--gray-700); }
+    input[type=email] { width: 100%; padding: 14px 16px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 1rem; font-family: inherit; margin-bottom: 20px; }
+    input[type=email]:focus { outline: none; border-color: var(--primary); }
+    .btn { display: inline-block; padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; transition: all .2s; font-family: inherit; }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 14px rgba(37,99,235,.35); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-accent { background: var(--accent); color: var(--secondary); }
+    .btn-accent:hover { background: #d97706; }
+    .btn-block { display: block; width: 100%; text-align: center; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .msg { padding: 12px 16px; border-radius: 10px; margin-bottom: 20px; font-size: .95rem; display: none; }
+    .msg.error { background: #fef2f2; color: #b91c1c; display: block; }
+    .msg.success { background: #f0fdf4; color: var(--green); display: block; }
+    .row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--gray-200); }
+    .row:last-child { border-bottom: none; }
+    .pill { padding: 4px 14px; border-radius: 50px; font-size: .8rem; font-weight: 700; }
+    .pill.on { background: #dcfce7; color: var(--green); }
+    .pill.off { background: #fef3c7; color: #b45309; }
+    .muted { color: var(--gray-500); font-size: .85rem; }
+    .stack > * + * { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">Hold<span>Pay</span></a>
+    <a href="/" class="muted">&larr; Back to site</a>
+  </nav>
+  <div class="wrap">{% block content %}{% endblock %}</div>
+</body>
+</html>
