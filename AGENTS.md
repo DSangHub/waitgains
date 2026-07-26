@@ -44,5 +44,23 @@ Customer data is stored in a local SQLite file (`waitgains.db`, gitignored).
   don't toggle; navbar anchor links work via native scrolling. This is the repo's actual
   state, not an environment problem.
 
+### Production / deployment (Render)
+Deployed to Render via `render.yaml` (Blueprint). Production runs under gunicorn, not
+the Flask dev server:
+```
+gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60
+```
+`init_db()` runs at import time, so the SQLite schema is created on boot. Set
+`STRIPE_SECRET_KEY` (and optionally `STRIPE_PUBLISHABLE_KEY`) in Render's Environment
+tab; `PUBLIC_BASE_URL` is set to the public domain in `render.yaml`.
+
+Caveat: SQLite (`waitgains.db`) lives on the instance's ephemeral disk, so customer
+data resets on each deploy/restart. For durable storage, attach a Render persistent
+disk (and point `DATABASE_PATH` at it) or move to a managed database.
+
+Note: GitHub Pages (`.github/workflows/pages.yml`, static landing page only) and a
+Render deployment of the full app both want the `waitgains.com` apex domain — a domain
+can only point to one host, so pick one for the live site.
+
 ### Lint / test / build
 There are no linters, automated tests, or build steps in this repo. Nothing to run.

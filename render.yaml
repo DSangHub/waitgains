@@ -1,0 +1,37 @@
+# Render Blueprint for the Waitgains Flask app (landing page + signup + Stripe payouts).
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Deploy: push this repo to GitHub, then in the Render dashboard choose
+# "New +" -> "Blueprint" and point it at the repo. Set STRIPE_SECRET_KEY
+# (and optionally STRIPE_PUBLISHABLE_KEY) in the service's Environment tab.
+services:
+  - type: web
+    name: waitgains
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      # Public URL used to build Stripe onboarding return/refresh links.
+      # Update this if you use a different domain than waitgains.com.
+      - key: PUBLIC_BASE_URL
+        value: https://waitgains.com
+      # Random, stable session-signing key managed by Render.
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      # Set these in the Render dashboard (Environment tab). Use TEST keys
+      # (sk_test_.../pk_test_...) for the sandbox.
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+    # Point the custom domain at this service. You must also update DNS
+    # (see PR notes) and disable GitHub Pages for the apex domain, since the
+    # domain can only point to one host.
+    domains:
+      - waitgains.com
+      - www.waitgains.com
