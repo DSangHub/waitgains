@@ -3,8 +3,8 @@
 ## Cursor Cloud specific instructions
 
 ### What this repo is
-HoldPay ("waitgains") — a product that lets businesses monetize phone hold time and
-earn a revenue share. The marketing landing page markup lives inside `README.md`
+Waitgains (waitgains.com) — a product that lets businesses monetize phone hold time
+and earn a revenue share. The marketing landing page markup lives inside `README.md`
 (prefixed with a `# waitgains` markdown heading, followed by a full `<!DOCTYPE html>`
 document). `app.py` is a Flask backend that serves that landing page plus the
 business signup + Stripe payout flow.
@@ -18,7 +18,7 @@ PORT=8000 python3 app.py                                   # http://localhost:80
 Routes: `/` (landing page), `/signup`, `/dashboard`, `POST /api/signup`,
 `POST /api/connect/start` (Stripe onboarding link), `/connect/return`,
 `/connect/refresh`, `POST /api/simulate-earning` (test payout), `GET /healthz`.
-Customer data is stored in a local SQLite file (`holdpay.db`, gitignored).
+Customer data is stored in a local SQLite file (`waitgains.db`, gitignored).
 
 ### Environment variables (see top of `app.py` for the full list)
 - `STRIPE_SECRET_KEY` — Stripe **test** secret key (`sk_test_...`). Required for the

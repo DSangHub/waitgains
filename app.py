@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""HoldPay backend: business signup + Stripe Connect payout onboarding.
+"""Waitgains backend: business signup + Stripe Connect payout onboarding.
 
 Businesses ("customers") sign up with their email and connect a Stripe account
 (Stripe Connect Express, test/sandbox mode) so they can receive payouts of their
-revenue share. This is the backend for the HoldPay landing page.
+revenue share. This is the backend for the Waitgains landing page.
 
 Environment variables:
     STRIPE_SECRET_KEY        Stripe secret key. Use a test key (``sk_test_...``)
@@ -16,7 +16,7 @@ Environment variables:
                              to the incoming request's host.
     FLASK_SECRET_KEY         Session signing key. A random one is generated if unset
                              (sessions won't survive a restart in that case).
-    DATABASE_PATH            SQLite file path. Defaults to ``holdpay.db``.
+    DATABASE_PATH            SQLite file path. Defaults to ``waitgains.db``.
 
 Run (dev):
     python3 app.py            # http://localhost:8000
@@ -49,9 +49,9 @@ except ImportError:  # pragma: no cover - dependency is declared in requirements
 
 ROOT = pathlib.Path(__file__).resolve().parent
 README = ROOT / "README.md"
-DB_PATH = os.environ.get("DATABASE_PATH", str(ROOT / "holdpay.db"))
+DB_PATH = os.environ.get("DATABASE_PATH", str(ROOT / "waitgains.db"))
 
-# HoldPay's advertised revenue share to the business (see landing page).
+# Waitgains' advertised revenue share to the business (see landing page).
 BUSINESS_REVENUE_SHARE = 0.60
 
 app = Flask(__name__)
@@ -251,7 +251,7 @@ def api_connect_start():
             email=email,
             capabilities={"transfers": {"requested": True}},
             business_type="individual",
-            metadata={"holdpay_email": email},
+            metadata={"waitgains_email": email},
         )
         account_id = account.id
         set_stripe_account(email, account_id)
@@ -297,7 +297,7 @@ def api_simulate_earning():
 
     Creates a test charge to fund the platform balance immediately, then
     transfers the business's revenue share to their connected account. This
-    mirrors how HoldPay would pay out ad revenue.
+    mirrors how Waitgains would pay out ad revenue.
     """
     email = session.get("email")
     if not email:
@@ -326,13 +326,13 @@ def api_simulate_earning():
         amount=gross_cents,
         currency="usd",
         source="tok_bypassPending",
-        description="HoldPay simulated ad revenue (test)",
+        description="Waitgains simulated ad revenue (test)",
     )
     transfer = stripe.Transfer.create(
         amount=share_cents,
         currency="usd",
         destination=customer["stripe_account_id"],
-        description="HoldPay revenue share payout (test)",
+        description="Waitgains revenue share payout (test)",
     )
     return jsonify(
         {

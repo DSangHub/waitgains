@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HoldPay - Turn Hold Time Into Profit</title>
+    <title>Waitgains - Turn Hold Time Into Profit</title>
     <style>
         /* ============================================================
            CSS VARIABLES & RESET
@@ -783,7 +783,7 @@
     ============================================================ -->
     <nav class="navbar">
         <div class="container">
-            <a href="#" class="logo">Hold<span>Pay</span></a>
+            <a href="#" class="logo">Wait<span>gains</span></a>
 
             <ul class="nav-links" id="navLinks">
                 <li><a href="#how-it-works">How It Works</a></li>
