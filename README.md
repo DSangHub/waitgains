@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HoldPay - Turn Hold Time Into Profit</title>
+    <title>Waitgains - Turn Hold Time Into Profit</title>
     <style>
         /* ============================================================
            CSS VARIABLES & RESET
@@ -783,13 +783,13 @@
     ============================================================ -->
     <nav class="navbar">
         <div class="container">
-            <a href="#" class="logo">Hold<span>Pay</span></a>
+            <a href="#" class="logo">Wait<span>gains</span></a>
 
             <ul class="nav-links" id="navLinks">
                 <li><a href="#how-it-works">How It Works</a></li>
                 <li><a href="#industries">Industries</a></li>
                 <li><a href="#pricing">Pricing</a></li>
-                <li class="nav-cta"><a href="#signup" class="btn btn-primary">Get Started</a></li>
+                <li class="nav-cta"><a href="/signup" class="btn btn-primary">Get Started</a></li>
             </ul>
 
             <button class="hamburger" id="hamburger" aria-label="Toggle menu">
@@ -811,7 +811,7 @@
                     with zero effort.
                 </p>
                 <div class="hero-cta-group">
-                    <a href="#signup" class="btn btn-accent">Get Started Free</a>
+                    <a href="/signup" class="btn btn-accent">Get Started Free</a>
                     <a href="#how-it-works" class="btn btn-outline-white">See How It Works</a>
                 </div>
                 <div class="stats">
@@ -974,7 +974,7 @@
                         <li>Live analytics dashboard</li>
                         <li>Email support</li>
                     </ul>
-                    <a href="#signup" class="btn btn-secondary btn-block">Get Started</a>
+                    <a href="/signup" class="btn btn-secondary btn-block">Get Started</a>
                 </div>
 
                 <div class="pricing-card popular">
@@ -988,7 +988,7 @@
                         <li>Priority ad matching</li>
                         <li>Priority support</li>
                     </ul>
-                    <a href="#signup" class="btn btn-primary btn-block">Start Professional</a>
+                    <a href="/signup" class="btn btn-primary btn-block">Start Professional</a>
                 </div>
 
                 <div class="pricing-card">
@@ -1002,7 +1002,7 @@
                         <li>Full analytics suite</li>
                         <li>SLA guarantee</li>
                     </ul>
-                    <a href="#signup" class="btn btn-secondary btn-block">Contact Sales</a>
+                    <a href="/signup" class="btn btn-secondary btn-block">Contact Sales</a>
                 </div>
             </div>
         </div>
