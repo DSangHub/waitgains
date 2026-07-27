@@ -156,12 +156,25 @@ def landing_html() -> str:
     return text[idx:] if idx != -1 else text
 
 
+def stripe_error_message(exc: "stripe.StripeError") -> str:
+    """Return a user-friendly message for a Stripe error."""
+    user_message = getattr(exc, "user_message", None)
+    return user_message or getattr(exc, "_message", None) or str(exc)
+
+
 def refresh_account_status(email: str) -> Optional[dict]:
-    """Fetch the latest Stripe account status and persist payouts_enabled."""
+    """Fetch the latest Stripe account status and persist payouts_enabled.
+
+    Returns None (and leaves state unchanged) if Stripe is unreachable or errors,
+    so callers such as the dashboard keep rendering.
+    """
     customer = find_customer(email)
     if not customer or not customer["stripe_account_id"] or not stripe_enabled():
         return None
-    account = stripe.Account.retrieve(customer["stripe_account_id"])
+    try:
+        account = stripe.Account.retrieve(customer["stripe_account_id"])
+    except stripe.StripeError:
+        return None
     set_payouts_enabled(email, bool(account.get("payouts_enabled")))
     return account
 
@@ -245,23 +258,26 @@ def api_connect_start():
     customer = find_customer(email)
     account_id = customer["stripe_account_id"]
 
-    if not account_id:
-        account = stripe.Account.create(
-            type="express",
-            email=email,
-            capabilities={"transfers": {"requested": True}},
-            business_type="individual",
-            metadata={"waitgains_email": email},
-        )
-        account_id = account.id
-        set_stripe_account(email, account_id)
+    try:
+        if not account_id:
+            account = stripe.Account.create(
+                type="express",
+                email=email,
+                capabilities={"transfers": {"requested": True}},
+                business_type="individual",
+                metadata={"waitgains_email": email},
+            )
+            account_id = account.id
+            set_stripe_account(email, account_id)
 
-    account_link = stripe.AccountLink.create(
-        account=account_id,
-        refresh_url=f"{base_url()}/connect/refresh",
-        return_url=f"{base_url()}/connect/return",
-        type="account_onboarding",
-    )
+        account_link = stripe.AccountLink.create(
+            account=account_id,
+            refresh_url=f"{base_url()}/connect/refresh",
+            return_url=f"{base_url()}/connect/return",
+            type="account_onboarding",
+        )
+    except stripe.StripeError as exc:
+        return jsonify({"ok": False, "error": stripe_error_message(exc)}), 502
     return jsonify({"ok": True, "url": account_link.url})
 
 
@@ -274,12 +290,15 @@ def connect_refresh():
     customer = find_customer(email)
     if not customer or not customer["stripe_account_id"]:
         return redirect(url_for("dashboard_page"))
-    account_link = stripe.AccountLink.create(
-        account=customer["stripe_account_id"],
-        refresh_url=f"{base_url()}/connect/refresh",
-        return_url=f"{base_url()}/connect/return",
-        type="account_onboarding",
-    )
+    try:
+        account_link = stripe.AccountLink.create(
+            account=customer["stripe_account_id"],
+            refresh_url=f"{base_url()}/connect/refresh",
+            return_url=f"{base_url()}/connect/return",
+            type="account_onboarding",
+        )
+    except stripe.StripeError:
+        return redirect(url_for("dashboard_page"))
     return redirect(account_link.url)
 
 
@@ -321,19 +340,22 @@ def api_simulate_earning():
     gross_cents = 1000  # $10.00 of simulated ad revenue
     share_cents = int(gross_cents * BUSINESS_REVENUE_SHARE)
 
-    # tok_bypassPending makes test-mode funds immediately available for transfer.
-    stripe.Charge.create(
-        amount=gross_cents,
-        currency="usd",
-        source="tok_bypassPending",
-        description="Waitgains simulated ad revenue (test)",
-    )
-    transfer = stripe.Transfer.create(
-        amount=share_cents,
-        currency="usd",
-        destination=customer["stripe_account_id"],
-        description="Waitgains revenue share payout (test)",
-    )
+    try:
+        # tok_bypassPending makes test-mode funds immediately available for transfer.
+        stripe.Charge.create(
+            amount=gross_cents,
+            currency="usd",
+            source="tok_bypassPending",
+            description="Waitgains simulated ad revenue (test)",
+        )
+        transfer = stripe.Transfer.create(
+            amount=share_cents,
+            currency="usd",
+            destination=customer["stripe_account_id"],
+            description="Waitgains revenue share payout (test)",
+        )
+    except stripe.StripeError as exc:
+        return jsonify({"ok": False, "error": stripe_error_message(exc)}), 502
     return jsonify(
         {
             "ok": True,
